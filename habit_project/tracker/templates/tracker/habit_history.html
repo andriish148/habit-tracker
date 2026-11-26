@@ -2,21 +2,16 @@
 
 {% block content %}
 <style>
-    /* Фони для сторінки */
     body.bg-theme-light { background: linear-gradient(135deg, #cbe3f5 0%, #9dc3e6 100%) !important; min-height: 100vh; }
     body.bg-theme-dark { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important; min-height: 100vh; }
     
-    /* Стилі картки */
     .custom-card { border-radius: 16px; transition: all 0.3s ease; }
     .bg-theme-light .custom-card { background-color: #ffffff; border: 1px solid #93c5fd; color: #1e293b; }
     .bg-theme-dark .custom-card { background-color: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); color: #f8fafc; }
     .custom-card .card-strip { height: 8px; border-top-left-radius: 16px; border-top-right-radius: 16px; background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%); }
 
-    /* --- ВИПРАВЛЕННЯ КОЛЬОРУ ДАТИ --- */
-    /* Для світлої теми дата сіра */
     .bg-theme-light .log-date { color: #6c757d !important; }
     
-    /* Для темної теми дата світло-сіра (щоб було видно) */
     .bg-theme-dark .log-date { color: #a0aec0 !important; }
 </style>
 
