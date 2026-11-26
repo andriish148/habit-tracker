@@ -1,0 +1,73 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<style>
+    body.bg-theme-light {
+        background: linear-gradient(135deg, #cbe3f5 0%, #9dc3e6 100%) !important;
+        min-height: 100vh;
+    }
+    
+    body.bg-theme-dark {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
+        min-height: 100vh;
+    }
+
+    .form-card {
+        border-radius: 16px;
+        background-color: #ffffff;
+        border: 1px solid #93c5fd;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .form-card-strip {
+        height: 8px;
+        background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+    }
+
+    .form-card input[type="text"] {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-card input[type="text"]:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+</style>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card form-card shadow-lg">
+            <div class="form-card-strip"></div>
+            <div class="card-body p-4">
+                <h3 class="fw-bold mb-4 text-center text-dark">Нова звичка</h3>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary mb-2">Назва звички:</label>
+                        {{ form.title }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">Зберегти</button>
+                    <a href="{% url 'habit_list' %}" class="btn btn-link w-100 mt-2 text-decoration-none text-secondary">Скасувати</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.remove('bg-light'); 
+        document.body.classList.add('bg-theme-dark', 'text-white'); 
+    } else {
+        document.body.classList.remove('bg-light');
+        document.body.classList.add('bg-theme-light'); 
+    }
+</script>
+{% endblock %}

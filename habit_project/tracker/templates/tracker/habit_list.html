@@ -1,0 +1,145 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<style>
+    body.bg-theme-light {
+        background: linear-gradient(135deg, #cbe3f5 0%, #9dc3e6 100%) !important;
+        min-height: 100vh;
+        color: #1e293b;
+    }
+    body.bg-theme-dark {
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
+        min-height: 100vh;
+        color: #f8fafc;
+    }
+    .custom-card {
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+    .bg-theme-light .custom-card {
+        background-color: #ffffff;
+        border: 1px solid #93c5fd;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        color: #1e293b;
+    }
+    .bg-theme-light .custom-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .bg-theme-dark .custom-card {
+        background-color: rgba(30, 41, 59, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        color: #f8fafc;
+    }
+    .bg-theme-dark .custom-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(96, 165, 250, 0.5);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    .custom-card .card-strip {
+        height: 8px;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+    }
+    .custom-card.is-done .card-strip {
+        background: linear-gradient(90deg, #059669 0%, #34d399 100%); 
+    }
+    .bg-theme-light .text-date { color: #475569; }
+    .bg-theme-dark .text-date { color: #94a3b8; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+    <h2 class="fw-bold">Мої звички</h2>
+    <div class="d-flex gap-2">
+        <button id="theme-toggle" class="btn btn-outline-dark shadow-sm fw-bold bg-white">Змінити фон</button>
+        <a href="{% url 'add_habit' %}" class="btn btn-primary shadow-sm fw-bold">+ Додати звичку</a>
+    </div>
+</div>
+
+<div class="row">
+    {% for data in habits_data %}
+    <div class="col-md-4 mb-4">
+        <div class="card custom-card h-100 {% if data.is_done %}is-done{% endif %}">
+            <div class="card-strip"></div>
+            <div class="card-body d-flex flex-column">
+                
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                    <h5 class="card-title fw-bold mb-0">{{ data.habit.title }}</h5>
+                    <form method="post" action="{% url 'delete_habit' data.habit.pk %}" class="m-0 p-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="Видалити" onclick="return confirm('Ви впевнені, що хочете видалити цю звичку?');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3h11V2h-11v1z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <p class="small text-date mb-0">Створено: {{ data.habit.created_at|date:"d.m.Y" }}</p>
+                    {% if data.streak > 0 %}
+                        <span class="badge bg-danger rounded-pill shadow-sm" title="Днів поспіль">
+                            🔥 {{ data.streak }}
+                        </span>
+                    {% endif %}
+                </div>
+                
+                <p class="small text-date mb-4">
+                    <i class="bi bi-check2-all"></i> Всього виконано: <strong>{{ data.total_count }}</strong>
+                </p>
+                
+                <div class="mt-auto">
+                    {% if data.is_done %}
+                        <a href="{% url 'toggle_habit' data.habit.pk %}" class="btn btn-success w-100 fw-bold mb-2">✓ Виконано сьогодні</a>
+                    {% else %}
+                        <a href="{% url 'toggle_habit' data.habit.pk %}" class="btn btn-primary w-100 fw-bold mb-2">Відмітити виконання</a>
+                    {% endif %}
+                    
+                    <a href="{% url 'habit_history' data.habit.pk %}" class="btn btn-sm btn-outline-secondary w-100">
+                        📅 Переглянути історію
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info shadow-sm border-0">У вас ще немає звичок. Додайте першу!</div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    const btn = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    if (localStorage.getItem('theme') === 'dark') {
+        body.classList.remove('bg-light');
+        body.classList.add('bg-theme-dark', 'text-white');
+        btn.classList.replace('btn-outline-dark', 'btn-outline-light');
+        btn.classList.remove('bg-white');
+    } else {
+        body.classList.remove('bg-dark');
+        body.classList.add('bg-theme-light');
+    }
+
+    btn.addEventListener('click', function() {
+        if (body.classList.contains('bg-theme-light')) {
+            body.classList.remove('bg-theme-light');
+            body.classList.add('bg-theme-dark', 'text-white');
+            btn.classList.replace('btn-outline-dark', 'btn-outline-light');
+            btn.classList.remove('bg-white');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.remove('bg-theme-dark', 'text-white');
+            body.classList.add('bg-theme-light');
+            btn.classList.replace('btn-outline-light', 'btn-outline-dark');
+            btn.classList.add('bg-white');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+</script>
+{% endblock %}
